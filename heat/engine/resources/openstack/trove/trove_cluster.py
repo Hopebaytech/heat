@@ -53,9 +53,9 @@ class TroveCluster(resource.Resource):
     )
 
     _INSTANCE_KEYS = (
-        FLAVOR, VOLUME_SIZE,
+        FLAVOR, VOLUME_SIZE, VOLUME_TYPE
     ) = (
-        'flavor', 'volume_size',
+        'flavor', 'volume_size', 'volume_type'
     )
 
     ATTRIBUTES = (
@@ -112,6 +112,12 @@ class TroveCluster(resource.Resource):
                         constraints=[
                             constraints.Range(1, 150),
                         ]
+                    ),
+                    VOLUME_TYPE: properties.Schema(
+                        properties.Schema.STRING,
+                        _('Type of the instance disk volume.'),
+                        required=True,
+                        constraints=[constraints.Length(max=255)]
                     )
                 }
             )
@@ -142,7 +148,7 @@ class TroveCluster(resource.Resource):
             instances.append({
                 'flavorRef': self.client_plugin().get_flavor_id(
                     instance[self.FLAVOR]),
-                'volume': {'size': instance[self.VOLUME_SIZE]}
+                'volume': {'size': instance[self.VOLUME_SIZE], 'type': instance[self.VOLUME_TYPE]}
             })
 
         args = {

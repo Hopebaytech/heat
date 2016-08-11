@@ -50,10 +50,10 @@ class OSDBInstance(resource.Resource):
 
     BAD_STATUSES = (ERROR, FAILED)
     PROPERTIES = (
-        NAME, FLAVOR, SIZE, DATABASES, USERS, AVAILABILITY_ZONE,
+        NAME, FLAVOR, SIZE, VOLUME_TYPE, DATABASES, USERS, AVAILABILITY_ZONE,
         RESTORE_POINT, DATASTORE_TYPE, DATASTORE_VERSION, NICS,
     ) = (
-        'name', 'flavor', 'size', 'databases', 'users', 'availability_zone',
+        'name', 'flavor', 'size', 'volume_type', 'databases', 'users', 'availability_zone',
         'restore_point', 'datastore_type', 'datastore_version', 'networks',
     )
 
@@ -120,6 +120,12 @@ class OSDBInstance(resource.Resource):
             constraints=[
                 constraints.Range(1, 150),
             ]
+        ),
+        VOLUME_TYPE: properties.Schema(
+            properties.Schema.STRING,
+            _('Database volume type.'),
+            required=False,
+            constraints=[constraints.Length(max=255)]
         ),
         NICS: properties.Schema(
             properties.Schema.LIST,
@@ -286,6 +292,8 @@ class OSDBInstance(resource.Resource):
         self.flavor = self.client_plugin().get_flavor_id(
             self.properties[self.FLAVOR])
         self.volume = {'size': self.properties[self.SIZE]}
+        if self.properties[self.VOLUME_TYPE]:
+            self.volume['type'] = self.properties[self.VOLUME_TYPE]
         self.databases = self.properties.get(self.DATABASES)
         self.users = self.properties.get(self.USERS)
         restore_point = self.properties.get(self.RESTORE_POINT)
