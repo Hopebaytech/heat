@@ -110,7 +110,7 @@ class TroveCluster(resource.Resource):
                         _('Size of the instance disk volume in GB.'),
                         required=True,
                         constraints=[
-                            constraints.Range(1, 8192),
+                            constraints.Range(1, 4096),
                         ]
                     ),
                     VOLUME_TYPE: properties.Schema(

@@ -118,7 +118,7 @@ class OSDBInstance(resource.Resource):
             _('Database volume size in GB.'),
             required=True,
             constraints=[
-                constraints.Range(1, 8192),
+                constraints.Range(1, 4096),
             ]
         ),
         VOLUME_TYPE: properties.Schema(
